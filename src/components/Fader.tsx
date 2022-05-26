@@ -14,6 +14,7 @@ const Fader:React.FC<Props> =({name, type}:Props)=> {
         console.log(e.target.value)
     }
 
+
     return (
         <div className={'fader-div'}>
             <h2>{name}</h2>
@@ -23,6 +24,7 @@ const Fader:React.FC<Props> =({name, type}:Props)=> {
                    onChange={handleChange}
                    className="fader"
                    max="10000"
+
             />
         </div>
     )
