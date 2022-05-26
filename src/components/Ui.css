@@ -2,6 +2,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    /*flex-direction: column;*/
+    gap:1rem;
     width:100%;
+    border:1px black solid;
+    padding:2rem;
+    border-radius: 10px;
+    background-color: rgba(168, 165, 165, 0.53);
+
 }

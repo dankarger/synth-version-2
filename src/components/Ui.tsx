@@ -10,7 +10,7 @@ interface Props {
 const Ui:React.FC<Props> =({name, children}:Props)=> {
     return (
         <div className={'ui'}>
-
+            {name}
             {children}
         </div>
     )
