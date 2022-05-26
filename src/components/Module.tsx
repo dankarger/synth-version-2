@@ -10,10 +10,14 @@ interface Props {
 
 const Module:React.FC<Props>=({name,type,children})=>{
     return(
-        <div className={`module ${type}`}>
-            {name}
-            {type}
-            {children}
+        <div className={`module-div ${type}`}>
+
+            <h3>{name}</h3>
+            <div className={`module`}>
+
+                {type}
+                {children}
+            </div>
         </div>
     )
 }

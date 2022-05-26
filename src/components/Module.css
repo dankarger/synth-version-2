@@ -29,3 +29,8 @@
     color: whitesmoke;
     height:100px;
 }
+.module-div {
+    border:1px solid grey;
+    border-radius: 10px;
+    padding:.5rem;
+}
