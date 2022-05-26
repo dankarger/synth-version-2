@@ -9,7 +9,7 @@ interface Props {
 }
 const Osc:React.FC<Props> =({name, type}:Props)=> {
     return (
-        <div className={'osc'}>
+        <div className={'osc-div'}>
             <h2>Osc- {name}</h2>
             <h3>Type: {type}</h3>
         </div>
