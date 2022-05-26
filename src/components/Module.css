@@ -2,7 +2,30 @@
 .module {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     gap:2rem;
+    border-radius: 10px;
+    border: 2px solid black;
+    height: 20rem;
+    color:whitesmoke;
+
+
+
+}
+
+.osc {
+    background: rgb(56,55,78);
+    background: linear-gradient(83deg, rgba(56,55,78,1) 15%, rgba(13,13,57,1) 84%);
+}
+
+.volume, .filter, .fx {
+    background-color: whitesmoke ;
+    color: black;
+}
+
+.keyboard {
+    background-color: #602716;
+    color: whitesmoke;
+    height:100px;
 }

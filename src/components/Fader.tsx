@@ -15,13 +15,13 @@ const Fader:React.FC<Props> =({name, type}:Props)=> {
     }
 
     return (
-        <div className={'fader'}>
-            <h2>Fader- {name}</h2>
-            <h3>Type: {type}</h3>
+        <div className={'fader-div'}>
+            <h2>{name}</h2>
+
             <input type="range"
                     value={frequency}
                    onChange={handleChange}
-                   className="frequency"
+                   className="fader"
                    max="10000"
             />
         </div>

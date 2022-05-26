@@ -64,3 +64,6 @@ export default function Store(props) {
     } );
     return <CTX.Provider value={stateHook}>{props.children}</CTX.Provider>
 }
+
+
+// TODO: convert to typescript

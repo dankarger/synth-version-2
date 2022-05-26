@@ -1,4 +1,5 @@
 import React from "react";
+import './Module.css'
 
 interface Props {
     name: string,
@@ -9,7 +10,7 @@ interface Props {
 
 const Module:React.FC<Props>=({name,type,children})=>{
     return(
-        <div className={'module'}>
+        <div className={`module ${type}`}>
             {name}
             {type}
             {children}

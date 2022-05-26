@@ -1,9 +1,13 @@
-.fader {
+.fader-div {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    border: 1px solid black;
-    padding: 1rem;
-    width:30%;
-    border-radius: 10px;
+    flex-direction: column;
+    /*padding: 1rem;*/
+    width:100%;
+    min-height: 150px;
+}
+
+.fader {
+    transform: rotate(270deg);
 }
