@@ -1,5 +1,5 @@
-import React, {SyntheticEvent, useState} from "react";
-import './Fader.css'
+import React,{useState} from "react";
+import './Fader.scss'
 
 
 interface Props {

@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
+
 import Ui from './components/Ui'
 import Fader from "./components/Fader";
 import Osc from "./components/Osc";
@@ -8,7 +9,7 @@ import Module from "./components/Module";
 function App() {
     return (
         <div className="App">
-            SYNTH
+           <h1>Synth V2</h1>
             <Ui name='ui1'>
                 <Module name={'2'} type={'osc'}>
                     <Osc name={'Osc1'} type={'osc'}/>

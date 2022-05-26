@@ -1,0 +1,10 @@
+@use 'fonts';
+
+.App {
+  background: red;
+
+}
+
+h1{
+  font-size: fonts.$font-size;
+}
