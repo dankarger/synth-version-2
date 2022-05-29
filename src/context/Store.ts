@@ -14,10 +14,22 @@ gain1.connect(filter);
 filter.connect(out);
 osc1.start();
 
-const CTX = React.createContext();
+type State = {
+    osc1Settings: {},
+    filterSettings: {},
+
+
+}
+type Action = {
+    type: string,
+    payload :{id: OscillatorNode | OscillatorType |BiquadFilterType,
+    value:string | number}
+}
+
+const CTX = React.createContext({});
 export {CTX};
 
-export function reducer(state, action) {
+export function reducer(state: State, action: Action) {
     let {id, value}= action.payload || {};
     switch(action.type) {
         case "START_OSC":
@@ -47,7 +59,11 @@ export function reducer(state, action) {
             return {...state};
     }
 }
-export default function Store(props) {
+
+interface Props {
+    children:JSX.Element | JSX.Element[]
+}
+export default function Store(props: Props) {
     const stateHook = React.useReducer(reducer, {
         osc1Settings:{
             frequency: osc1.frequency.value,

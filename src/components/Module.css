@@ -28,6 +28,7 @@
     background-color: #602716;
     color: whitesmoke;
     height:100px;
+    width:100%;
 }
 .module-div {
     border:1px solid grey;

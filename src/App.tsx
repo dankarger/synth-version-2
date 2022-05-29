@@ -5,6 +5,7 @@ import Ui from './components/Ui'
 import Fader from "./components/Fader";
 import Osc from "./components/Osc";
 import Module from "./components/Module";
+import Keyboard from "./components/Keyboard";
 
 function App() {
     return (
@@ -12,10 +13,10 @@ function App() {
            <h1>Synth V2</h1>
             <Ui name='ui1'>
                 <Module name={'2'} type={'osc'}>
-                    <Osc name={'Osc1'} type={'osc'}/>
+                    <Osc name={'Osc1'} typeName={'osc'}/>
                 </Module>
                 <Module name={'3'} type={'osc'}>
-                    <Osc name={'Osc2'} type={'osc'}/>
+                    <Osc name={'Osc2'} typeName={'osc'}/>
                 </Module>
                 <Module name={'1'} type={'volume'}>
                     <Fader name={'fader1'} type={'volume'}/>
@@ -35,13 +36,11 @@ function App() {
                     <Fader name={'fx2'} type={'fx'}/>
                 </Module>
             </Ui>
-            <Ui name={'keyboard'}>
+            <Ui name={''}>
 
-                    <Module name={'keyboard'} type={'keyboard'}>
-                        <div className="keyboards">
-                        Keyboard
-                        </div>
-                    </Module>
+                    {/*<Module name={'keyboard'} type={'keyboard'}>*/}
+                       <Keyboard />
+                    {/*</Module>*/}
 
 
             </Ui>
