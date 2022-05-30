@@ -192,11 +192,15 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                     {/*    max="5000"*/}
                     {/*    value={frequency}*/}
                     {/*    onChange={change} type="range" id="frequency"/>*/}
-                    <input type="range"
-                           max={100}
-                           value={vibratoLevel}
-                           onChange={handleVibratoChange}
-                    />
+                    <div className={'input-div'}>
+                        <div className='value'>{vibratoLevel}</div>
+                        <input type="range"
+                               max={100}
+                               value={vibratoLevel}
+                               onChange={handleVibratoChange}
+                        />
+                    </div>
+
                 </div>
                 <div className="params">
 

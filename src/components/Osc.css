@@ -1,0 +1,13 @@
+.value {
+    /*margin-top: $faderSize ;*/
+    width:fit-content;
+    border: 1px solid grey;
+    color:grey;
+    padding: 2px;
+    border-radius: 2px;
+}
+.input-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

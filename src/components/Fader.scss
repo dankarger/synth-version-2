@@ -1,3 +1,5 @@
+$faderSize: 75px;
+
 .fader-div {
     display: flex;
     justify-content: space-between;
@@ -22,6 +24,13 @@
     border-radius: 4px;
 
 
+}
+.fader-value {
+    margin-top: $faderSize ;
+    border: 1px solid grey;
+    color:grey;
+    padding: 2px;
+    border-radius: 2px;
 }
 .wsf-range-vertical {
     --wsf-range-vertical-height: 200px !important;
