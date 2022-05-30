@@ -13,10 +13,10 @@ function App() {
            <h1>Synth V2</h1>
             <Ui name='ui1'>
                 <Module name={'2'} type={'osc'}>
-                    <Osc name={'Osc1'} typeName={'osc'}/>
+                    <Osc oscName={'Osc1'} typeName={'osc'}/>
                 </Module>
                 <Module name={'3'} type={'osc'}>
-                    <Osc name={'Osc2'} typeName={'osc'}/>
+                    <Osc oscName={'Osc2'} typeName={'osc'}/>
                 </Module>
                 <Module name={'1'} type={'volume'}>
                     <Fader name={'fader1'} type={'volume'}/>

@@ -1,11 +1,12 @@
-import React, {useContext, useState, useRef} from "react";
+import React, {useContext, useState, useRef, useEffect, createRef} from "react";
 import './Osc.css'
 import {notes} from "./notes";
+
 // import {CTX} from "../context/Store"
 
 
 interface Props {
-    name: string,
+    oscName: string,
     typeName: string
 }
 //
@@ -50,18 +51,28 @@ primaryGainControl.gain.setValueAtTime(0.05,0)
 primaryGainControl.connect(audioContext.destination)
 
 
-const Osc:React.FC<Props> =({name, typeName}:Props)=> {
+const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     // const [appState, updateState] = useContext(CTX);
     // let {type , frequency, detune}= appState.osc1Settings;
     const [frequency, setFrequency] = useState(200);
+    const [vibrato, setVibrato] = useState(0);
+
     const [detune, setDetune] = useState(0);
 
     const [ type, changeTypeState] = useState('sine')
-    const buttonRef = useRef(null)
+    // const buttonRef = useRef(null)
+    const itemsRef = useRef([]);
+    const tryRef = createRef()
+
+    useEffect(() => {
+
+    }, []);
+
+
 
     const setupOsc =()=>{
 
-       return notes.map(({name, frequency})=> {
+       return notes.map(({name, frequency, key},i)=> {
             // const noteButton = document.createElement('button')
             // noteButton.innerText = name;
             // noteButton.addEventListener('click', ()=> {
@@ -70,20 +81,17 @@ const Osc:React.FC<Props> =({name, typeName}:Props)=> {
                 const noteOscillator = audioContext.createOscillator();
                 noteOscillator.type = 'square';
                 noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-
                 const vibrato = audioContext.createOscillator();
-                vibrato.frequency.setValueAtTime(20, 0);
+                vibrato.frequency.setValueAtTime(10, 0);
                 const vibratoGain = audioContext.createGain();
                 vibratoGain.gain.setValueAtTime(10,0);
                 vibrato.connect(vibratoGain);
                 vibratoGain.connect(noteOscillator.frequency);
                 vibrato.start();
-
                 const attackTime = 0.2;
                 const decayTime = 0.3;
                 const sustainLevel = 0.7;
                 const releaseTime = 0.2;
-
                 const now = audioContext.currentTime
                 const noteGain = audioContext.createGain();
                 noteGain.gain.setValueAtTime(0,0);
@@ -91,19 +99,28 @@ const Osc:React.FC<Props> =({name, typeName}:Props)=> {
                 noteGain.gain.linearRampToValueAtTime(sustainLevel, now + attackTime +decayTime)
                 noteGain.gain.setValueAtTime(sustainLevel, now + 1 - releaseTime )
                 noteGain.gain.linearRampToValueAtTime(0, now+1)
-
-
                 noteOscillator.connect(noteGain)
                 noteGain.connect(primaryGainControl)
                 noteOscillator.start();
                 noteOscillator.stop(audioContext.currentTime +1)
             }
+           itemsRef.current = itemsRef.current.slice(0, notes.length);
+            document.addEventListener('keypress',(e)=>{
+
+                console.log('key',e.key)
+                if(e.key === key) {
+                    console.log(itemsRef)
+                    handleClick()
+                }
+            })
             // )
             // document.body.appendChild(noteButton)
-            return (
+            // @ts-ignore
+           return (
                 <button
                 onClick={handleClick}
-                key={name}
+                key={name + oscName}
+                // ref={el => itemsRef.current[i]  = el }
                 >{name} </button>
             )
         })
@@ -111,22 +128,24 @@ const Osc:React.FC<Props> =({name, typeName}:Props)=> {
 
     }
 
-    // const change =(e: React.ChangeEvent<HTMLInputElement>)=> {
-    //     let {id, value} = e.target as any;
-    //     osc1.frequency.value = value
-    //    setFrequency(value)
-    //
-    //     // updateState({type: "CHANGE_OSC1", payload: {id, value}})
-    // }
+    const change =(e: React.ChangeEvent<HTMLInputElement>)=> {
+        let {id, value} = e.target as any;
+        // osc1.frequency.value = value
+       setFrequency(value)
+
+        // updateState({type: "CHANGE_OSC1", payload: {id, value}})
+    }
     // const changeType = (e: React.MouseEvent<HTMLButtonElement>)=>{
     //     let {id} = e.target  as HTMLInputElement;
     //     // updateState({type: "CHANGE_OSC1_TYPE", payload: {id}})
     // }
 
-
+    const handleVibratoChange = (e:React.FormEvent<HTMLInputElement>)=>{
+        setVibrato(Number(e.currentTarget.value));
+    }
     return (
         <div className={'osc-div'}>
-            <h2>Osc- {name}</h2>
+            <h2>Osc- {oscName}</h2>
             <h3>Type: {typeName}</h3>
             <div >
                 {/*<button onClick={*/}
@@ -159,6 +178,11 @@ const Osc:React.FC<Props> =({name, typeName}:Props)=> {
                     {/*    max="5000"*/}
                     {/*    value={frequency}*/}
                     {/*    onChange={change} type="range" id="frequency"/>*/}
+                    <input type="range"
+                    max={100}
+                           value={vibrato}
+                           onChange={handleVibratoChange}
+                    />
                 </div>
 
                 <div className="params">
@@ -167,7 +191,7 @@ const Osc:React.FC<Props> =({name, typeName}:Props)=> {
                     <input
                         // max="5000"
                         value={detune}
-                        // onChange={change}
+                        onChange={change}
                         type="range" id="detune"/>
                 </div>
                 <div className="params">
