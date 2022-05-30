@@ -50,41 +50,43 @@ primaryGainControl.gain.setValueAtTime(0.05,0)
 
 primaryGainControl.connect(audioContext.destination)
 
-
 const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     // const [appState, updateState] = useContext(CTX);
     // let {type , frequency, detune}= appState.osc1Settings;
     const [frequency, setFrequency] = useState(200);
-    const [vibrato, setVibrato] = useState(0);
+    const [vibratoLevel, setVibratoLevel] = useState(0);
 
-    const [detune, setDetune] = useState(0);
+    const [detune, setDetune] = useState(50);
 
     const [ type, changeTypeState] = useState('sine')
-    // const buttonRef = useRef(null)
-    const itemsRef = useRef([]);
+    const buttonRef = useRef(null)
+    const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
     const tryRef = createRef()
 
-    useEffect(() => {
+    const arrLength = notes.length;
+    const [elRefs, setElRefs] = React.useState([]);
 
-    }, []);
+    // React.useEffect(() => {
+    //     // add or remove refs
+    //     setElRefs((elRefs) =>
+    //         Array(arrLength)
+    //             .fill()
+    //             .map((_, i) => elRefs[i] || createRef()),
+    //     );
+    // }, [arrLength]);
 
 
 
     const setupOsc =()=>{
-
        return notes.map(({name, frequency, key},i)=> {
-            // const noteButton = document.createElement('button')
-            // noteButton.innerText = name;
-            // noteButton.addEventListener('click', ()=> {
-
                 const handleClick =()=>{
                 const noteOscillator = audioContext.createOscillator();
                 noteOscillator.type = 'square';
                 noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
                 const vibrato = audioContext.createOscillator();
-                vibrato.frequency.setValueAtTime(10, 0);
+                vibrato.frequency.setValueAtTime(vibratoLevel, 0);
                 const vibratoGain = audioContext.createGain();
-                vibratoGain.gain.setValueAtTime(10,0);
+                vibratoGain.gain.setValueAtTime(20,0);
                 vibrato.connect(vibratoGain);
                 vibratoGain.connect(noteOscillator.frequency);
                 vibrato.start();
@@ -94,6 +96,7 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                 const releaseTime = 0.2;
                 const now = audioContext.currentTime
                 const noteGain = audioContext.createGain();
+                noteOscillator.frequency.setValueAtTime(frequency+detune,audioContext.currentTime)
                 noteGain.gain.setValueAtTime(0,0);
                 noteGain.gain.linearRampToValueAtTime(1, now + attackTime);
                 noteGain.gain.linearRampToValueAtTime(sustainLevel, now + attackTime +decayTime)
@@ -104,21 +107,22 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                 noteOscillator.start();
                 noteOscillator.stop(audioContext.currentTime +1)
             }
-           itemsRef.current = itemsRef.current.slice(0, notes.length);
-            document.addEventListener('keypress',(e)=>{
+           // itemsRef.current = itemsRef.current.slice(0, notes.length);
 
-                console.log('key',e.key)
+              // const newItemRef = createRef()
+                // itemsRef.current.current.push()
+            document.addEventListener('keypress',(e)=>{
+                console.log('key',buttonRef)
                 if(e.key === key) {
                     console.log(itemsRef)
                     handleClick()
                 }
             })
-            // )
-            // document.body.appendChild(noteButton)
-            // @ts-ignore
+           // @ts-ignore
            return (
                 <button
                 onClick={handleClick}
+                // ref={el => itemsRef.current[i] = el}
                 key={name + oscName}
                 // ref={el => itemsRef.current[i]  = el }
                 >{name} </button>
@@ -141,7 +145,11 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     // }
 
     const handleVibratoChange = (e:React.FormEvent<HTMLInputElement>)=>{
-        setVibrato(Number(e.currentTarget.value));
+        setVibratoLevel(Number(e.currentTarget.value));
+    }
+
+    const handleDetuneChange =(e:React.FormEvent<HTMLInputElement>) => {
+        setDetune(Number(e.currentTarget.value))
     }
     return (
         <div className={'osc-div'}>
@@ -180,7 +188,7 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                     {/*    onChange={change} type="range" id="frequency"/>*/}
                     <input type="range"
                     max={100}
-                           value={vibrato}
+                           value={vibratoLevel}
                            onChange={handleVibratoChange}
                     />
                 </div>
@@ -189,9 +197,9 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
 
                     <h3>detune</h3>
                     <input
-                        // max="5000"
+                        max="100"
                         value={detune}
-                        onChange={change}
+                        onChange={handleDetuneChange}
                         type="range" id="detune"/>
                 </div>
                 <div className="params">
