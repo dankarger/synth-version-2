@@ -58,7 +58,7 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
 
     const [detune, setDetune] = useState(50);
 
-    const [ type, changeTypeState] = useState('sine')
+    const [ oscType, setOscType] = useState<string | OscillatorType>('sine')
     const buttonRef = useRef(null)
     const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
     const tryRef = createRef()
@@ -81,7 +81,9 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
        return notes.map(({name, frequency, key},i)=> {
                 const handleClick =()=>{
                 const noteOscillator = audioContext.createOscillator();
-                noteOscillator.type = 'square';
+                // noteOscillator.type = oscType=== 'sine'? 'sine' :'square';
+                    // @ts-ignore
+                    noteOscillator.type = oscType;
                 noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
                 const vibrato = audioContext.createOscillator();
                 vibrato.frequency.setValueAtTime(vibratoLevel, 0);
@@ -151,10 +153,14 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     const handleDetuneChange =(e:React.FormEvent<HTMLInputElement>) => {
         setDetune(Number(e.currentTarget.value))
     }
+    const handleChangeOscType  =(e:React.FormEvent<HTMLSelectElement>) => {
+        setOscType(e.currentTarget.selectedOptions[0].value)
+        console.log('gg',e.currentTarget.selectedOptions[0].value)
+    }
     return (
         <div className={'osc-div'}>
-            <h2>Osc- {oscName}</h2>
-            <h3>Type: {typeName}</h3>
+            <h2>{oscName}</h2>
+            {/*<h3>Type: {typeName}</h3>*/}
             <div >
                 {/*<button onClick={*/}
                 {/*    ()=>updateState({type:"START_OSC"})*/}
@@ -167,7 +173,7 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                 {/*}>Stop</button>*/}
             </div>
             <div className="control">
-                <h2>OSC1</h2>
+
                 <div >
                     {/*<button onClick={*/}
                     {/*    ()=>{osc1.start()}*/}
@@ -177,22 +183,21 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                     {/*    // ()=>updateState({type:"STOP_OSC"})*/}
                     {/*    ()=>{osc1.stop()}*/}
                     {/*}>Stop</button>*/}
-                    {setupOsc()}
+
                 </div>
                 <div className="params">
 
-                    <h3>frequency</h3>
+                    <h3>Vibrato</h3>
                     {/*<input*/}
                     {/*    max="5000"*/}
                     {/*    value={frequency}*/}
                     {/*    onChange={change} type="range" id="frequency"/>*/}
                     <input type="range"
-                    max={100}
+                           max={100}
                            value={vibratoLevel}
                            onChange={handleVibratoChange}
                     />
                 </div>
-
                 <div className="params">
 
                     <h3>detune</h3>
@@ -217,8 +222,16 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                     {/*<button */}
                     {/*    // onClick={changeType}*/}
                     {/*        id="sawtooth" className={`${type ==='sawtooth' && 'active'}`}>sawtooth</button>*/}
+                    <label htmlFor="oscTypes">Type</label>
+                    <select name="oscTypes" id="oscTypes" defaultValue={oscType} onChange={handleChangeOscType} >
+                        <option value="sine">Sine</option>
+                        <option value="triangle">triangle</option>
+                        <option value="square">square</option>
+                        <option value="sawtooth">sawtooth</option>
 
+                    </select>
                 </div>
+                {setupOsc()}
             </div>
         </div>
     )
