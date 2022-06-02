@@ -4,8 +4,6 @@ import Button from "./Button";
 import {notes} from "./notes";
 
 
-
-
 // import {CTX} from "../context/Store"
 
 
@@ -13,6 +11,7 @@ interface Props {
     oscName: string,
     typeName: string
 }
+
 //
 // // interface UseContextType {
 // //     appState:string
@@ -44,26 +43,26 @@ const buffer = audioContext.createBuffer(
 const channelData = buffer.getChannelData(0);
 console.log(channelData.length)
 
-for (let i=0; i< buffer.length; i++) {
-    channelData[i] = Math.random() * 2 -1;
+for (let i = 0; i < buffer.length; i++) {
+    channelData[i] = Math.random() * 2 - 1;
 }
 
 
 const primaryGainControl = audioContext.createGain()
-primaryGainControl.gain.setValueAtTime(0.05,0)
+primaryGainControl.gain.setValueAtTime(0.05, 0)
 
 primaryGainControl.connect(audioContext.destination)
 
-const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
+const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
     // const [appState, updateState] = useContext(CTX);
     // let {type , frequency, detune}= appState.osc1Settings;
     const [frequency, setFrequency] = useState(200);
     const [vibratoLevel, setVibratoLevel] = useState(0);
     const [detune, setDetune] = useState(50);
-    const [ oscType, setOscType] = useState<string | OscillatorType>('sine');
+    const [oscType, setOscType] = useState<string | OscillatorType>('sine');
     const [isMute, setISMute] = useState(false)
-    const [ oscGain, setOScGain] = useState<number | undefined>(1);
-    const [ oscGainLastValue, setOscGainLastValue] = useState<number>();
+    const [oscGain, setOScGain] = useState<number | undefined>(1);
+    const [oscGainLastValue, setOscGainLastValue] = useState<number>();
     // const [buttonList, setButtonList] = useState<string[] | number[] |  React.RefObject<unknown>[]>([])
     // const buttonRef = useRef(null)
     // const [buttonList, setButtonList] = useState<{}[]>([{name:()=>console.log('g')},{}])
@@ -83,13 +82,13 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     // }, [arrLength]);
 
 
-    const muteOsc =()=> {
+    const muteOsc = () => {
         setISMute(true)
         setOscGainLastValue(oscGain)
         setOScGain(0);
         // primaryGainControl.gain.setValueAtTime(0, audioContext.currentTime)
     }
-    const unMuteOsc =()=> {
+    const unMuteOsc = () => {
         setISMute(false)
         setOScGain(oscGainLastValue);
         // if (typeof oscGainLastValue === "number") {
@@ -99,28 +98,28 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     }
 
 
-    const handleMuteButton=()=>{
-        if(isMute){
+    const handleMuteButton = () => {
+        if (isMute) {
             unMuteOsc()
-        }else {
+        } else {
             muteOsc()
         }
     }
 
 
-    const setupOsc =()=>{
+    const setupOsc = () => {
         myRefs.current = notes.map((element, i) => myRefs.current[i] ?? createRef());
 
-        return notes.map(({name, frequency, key},i)=> {
-                const handleClick =()=>{
+        return notes.map(({name, frequency, key}, i) => {
+            const handleClick = () => {
                 const noteOscillator = audioContext.createOscillator();
-                    // @ts-ignore
-                    noteOscillator.type = oscType;
+                // @ts-ignore
+                noteOscillator.type = oscType;
                 noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
                 const vibrato = audioContext.createOscillator();
                 vibrato.frequency.setValueAtTime(vibratoLevel, 0);
                 const vibratoGain = audioContext.createGain();
-                vibratoGain.gain.setValueAtTime(20,0);
+                vibratoGain.gain.setValueAtTime(20, 0);
                 vibrato.connect(vibratoGain);
                 vibratoGain.connect(noteOscillator.frequency);
                 vibrato.start();
@@ -130,132 +129,64 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                 const releaseTime = 0.2;
                 const now = audioContext.currentTime
                 const noteGain = audioContext.createGain();
-                noteOscillator.frequency.setValueAtTime(frequency+detune,audioContext.currentTime)
-                noteGain.gain.setValueAtTime(0,0);
+                noteOscillator.frequency.setValueAtTime(frequency + detune, audioContext.currentTime)
+                noteGain.gain.setValueAtTime(0, 0);
                 noteGain.gain.linearRampToValueAtTime(1, now + attackTime);
-                noteGain.gain.linearRampToValueAtTime(sustainLevel, now + attackTime +decayTime)
-                noteGain.gain.setValueAtTime(sustainLevel, now + 1 - releaseTime )
-                noteGain.gain.linearRampToValueAtTime(0, now+1)
+                noteGain.gain.linearRampToValueAtTime(sustainLevel, now + attackTime + decayTime)
+                noteGain.gain.setValueAtTime(sustainLevel, now + 1 - releaseTime)
+                noteGain.gain.linearRampToValueAtTime(0, now + 1)
                 noteOscillator.connect(noteGain)
-                    const masterOscGain = audioContext.createGain()
+                const masterOscGain = audioContext.createGain()
                 noteGain.connect(masterOscGain)
-                    if (typeof oscGain === "number") {
-                        masterOscGain.gain.setValueAtTime(oscGain, audioContext.currentTime)
-                    }
-                    masterOscGain.connect(primaryGainControl)
+                if (typeof oscGain === "number") {
+                    masterOscGain.gain.setValueAtTime(oscGain, audioContext.currentTime)
+                }
+                masterOscGain.connect(primaryGainControl)
                 noteOscillator.start();
-                noteOscillator.stop(audioContext.currentTime +1)
+                noteOscillator.stop(audioContext.currentTime + 1)
             }
 
-           return (
-               <div key={name + oscName}>
-                <button
-                onClick={handleClick}
-                ref={myRefs.current[i]}
-                // ref={el => itemsRef.current[i] = el}
-                key={name + oscName}
-                // ref={el => itemsRef.current[i]  = el }
-                >{name} </button>
-                   {/*<Button ref={myRefs.current[i]} label={name} onClick={handleClick} />*/}
-               </div>
+            return (
+                <div key={name + oscName}>
+                    <button
+                        onClick={handleClick}
+                        ref={myRefs.current[i]}
+                        // ref={el => itemsRef.current[i] = el}
+                        key={name + oscName}
+                        // ref={el => itemsRef.current[i]  = el }
+                    >{name} </button>
+                    {/*<Button ref={myRefs.current[i]} label={name} onClick={handleClick} />*/}
+                </div>
             )
         })
 
 
     }
 
-    document.addEventListener('keypress',(e)=> {
-        // console.log('key',buttonRef)
-        // if(e.key === 'a') {
-        // const keyPressed = e.key
-        // try {
-        //     switch(keyPressed) {
-        //         // @ts-ignore
-        //         case 'a':
-        //             // console.log('a')
-        //              let soundA = myRefs.current[0]
-        //             if (soundA !== null) {
-        //                 console.table(soundA)
-        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
-        //                 // @ts-ignore
-        //                 if (soundA.current.click !== null) soundA.current.click()
-        //             }
-        //             break
-        //         case 'w':
-        //             // console.log('a')
-        //             let soundB = myRefs.current[1]
-        //             if (soundB !== null) {
-        //                 console.table(soundB)
-        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
-        //                 // @ts-ignore
-        //                 if (soundB.current.click !== null) soundB.current.click()
-        //
-        //             }
-        //             break;
-        //         case 's':
-        //             // console.log('a')
-        //             let soundC = myRefs.current[2];
-        //             if (soundC !== null) {
-        //                 console.table(soundC)
-        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
-        //                 // @ts-ignore
-        //                 if (soundC.current.click !== null) soundC.current.click()
-        //             }
-        //             break
-        //         case 'e':
-        //             // console.log('a')
-        //             let soundD = myRefs.current[3];
-        //             if (soundD !== null) {
-        //                 console.table(soundD)
-        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
-        //                 // @ts-ignore
-        //                 if (soundD.current.click !== null) soundD.current.click()
-        //
-        //             }
-        //             break
-        //         default:
-        //             console.log('default')
-        //
-        //     }
-        // }catch(e) {
-        //     console.log('%c Oh my heavens! ' , 'background: #222; color: #bada55')
-        // }
-
-        // }
-
-        const keyPressed2 = notes.filter(note => {
-            if (note.key === e.key)
-                return note
-        })[0];
+    document.addEventListener('keypress', (e) => {
         let index = notes.findIndex(obj => {
             return obj.key === e.key
         })
-        // if(index===-1) {
-        //     index = 0
-        // }
         console.log(' key', index)
         let keyPlaying = myRefs.current[index];
         try {
             if (index !== -1) {
-                // console.table(soundD)
-                // console.log('%c Oh my heavens! ', 'background: #222; color: green')
                 // @ts-ignore
                 if (keyPlaying.current !== null) {
                     // @ts-ignore
                     keyPlaying.current.click()
                 }
             }
-        }catch(e) {
+        } catch (e) {
             console.error(e)
         }
-        })
+    })
 
 
-
-    const change =(e: React.ChangeEvent<HTMLInputElement>)=> {
+    const change = (e: React.ChangeEvent<HTMLInputElement>) => {
         let {id, value} = e.target as any;
         // osc1.frequency.value = value
-       setFrequency(value)
+        setFrequency(value)
 
         // updateState({type: "CHANGE_OSC1", payload: {id, value}})
     }
@@ -264,22 +195,22 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     //     // updateState({type: "CHANGE_OSC1_TYPE", payload: {id}})
     // }
 
-    const handleVibratoChange = (e:React.FormEvent<HTMLInputElement>)=>{
+    const handleVibratoChange = (e: React.FormEvent<HTMLInputElement>) => {
         setVibratoLevel(Number(e.currentTarget.value));
     }
 
-    const handleDetuneChange =(e:React.FormEvent<HTMLInputElement>) => {
+    const handleDetuneChange = (e: React.FormEvent<HTMLInputElement>) => {
         setDetune(Number(e.currentTarget.value))
     }
-    const handleChangeOscType  =(e:React.FormEvent<HTMLSelectElement>) => {
+    const handleChangeOscType = (e: React.FormEvent<HTMLSelectElement>) => {
         setOscType(e.currentTarget.selectedOptions[0].value)
-        console.log('gg',e.currentTarget.selectedOptions[0].value)
+        console.log('gg', e.currentTarget.selectedOptions[0].value)
     }
     return (
         <div className={'osc-div'}>
             <h2>{oscName}</h2>
             {/*<h3>Type: {typeName}</h3>*/}
-            <div >
+            <div>
                 {/*<button onClick={*/}
                 {/*    ()=>updateState({type:"START_OSC"})*/}
                 {/*    ()=>{osc1.connect(gain1)*/}
@@ -292,7 +223,7 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
             </div>
             <div className="control">
 
-                <div >
+                <div>
                     {/*<button onClick={*/}
                     {/*    ()=>{osc1.start()}*/}
                     {/*    // ()=>updateState({type:"START_OSC"})*/}
@@ -345,7 +276,7 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                     {/*    // onClick={changeType}*/}
                     {/*        id="sawtooth" className={`${type ==='sawtooth' && 'active'}`}>sawtooth</button>*/}
                     <label htmlFor="oscTypes">Type</label>
-                    <select name="oscTypes" id="oscTypes" defaultValue={oscType} onChange={handleChangeOscType} >
+                    <select name="oscTypes" id="oscTypes" defaultValue={oscType} onChange={handleChangeOscType}>
                         <option value="sine">Sine</option>
                         <option value="triangle">triangle</option>
                         <option value="square">square</option>
@@ -353,10 +284,10 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
 
                     </select>
                     <label htmlFor={oscName}>Mute</label>
-                    <input  id={oscName}
-                            type="checkbox"
-                            value={isMute.toString()}
-                            onChange={handleMuteButton}
+                    <input id={oscName}
+                           type="checkbox"
+                           value={isMute.toString()}
+                           onChange={handleMuteButton}
                     />
                 </div>
                 {setupOsc()}
