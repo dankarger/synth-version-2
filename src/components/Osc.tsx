@@ -4,7 +4,7 @@ import Button from "./Button";
 import {keyEventNotes, notes} from "./notes";
 
 
-// import {CTX} from "../context/Store"
+import {CTX} from "../context/Store"
 
 
 interface Props {
@@ -54,7 +54,7 @@ primaryGainControl.gain.setValueAtTime(0.05, 0)
 primaryGainControl.connect(audioContext.destination)
 
 const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
-    // const [appState, updateState] = useContext(CTX);
+    const [appState, updateState] = useContext(CTX);
     // let {type , frequency, detune}= appState.osc1Settings;
     const [frequency, setFrequency] = useState(200);
     const [vibratoLevel, setVibratoLevel] = useState(0);
@@ -63,38 +63,16 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
     const [isMute, setISMute] = useState(false)
     const [oscGain, setOScGain] = useState<number | undefined>(1);
     const [oscGainLastValue, setOscGainLastValue] = useState<number>();
-    // const [buttonList, setButtonList] = useState<string[] | number[] |  React.RefObject<unknown>[]>([])
-    // const buttonRef = useRef(null)
-    // const [buttonList, setButtonList] = useState<{}[]>([{name:()=>console.log('g')},{}])
-    // const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
-    // const tryRef = createRef()
-    // const arrLength = notes.length;
-    // const [buttonsRefs, setButtonsRefs] = React.useState([]);
     const myRefs = useRef([])
-
-    // React.useEffect(() => {
-    //     // add or remove refs
-    //     setElRefs((elRefs) =>
-    //         Array(arrLength)
-    //             .fill()
-    //             .map((_, i) => elRefs[i] || createRef()),
-    //     );
-    // }, [arrLength]);
-
 
     const muteOsc = () => {
         setISMute(true)
         setOscGainLastValue(oscGain)
         setOScGain(0);
-        // primaryGainControl.gain.setValueAtTime(0, audioContext.currentTime)
     }
     const unMuteOsc = () => {
         setISMute(false)
         setOScGain(oscGainLastValue);
-        // if (typeof oscGainLastValue === "number") {
-        //     primaryGainControl.gain.setValueAtTime(oscGainLastValue, audioContext.currentTime)
-        // }
-
     }
 
 
@@ -161,29 +139,8 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
             )
         })
 
-
     }
 
-    const setupEventsListener=()=> {
-        // document.addEventListener('keypress', function keyPressEvent(e) {
-        //     let index = notes.findIndex(obj => {
-        //         return obj.key === e.key
-        //     })
-        //     console.log(' key', index)
-        //     let keyPlaying = myRefs.current[index];
-        //     try {
-        //         if (index !== -1) {
-        //             // @ts-ignore
-        //             if (keyPlaying.current !== null) {
-        //                 // @ts-ignore
-        //                 keyPlaying.current.click()
-        //             }
-        //         }
-        //     } catch (e) {
-        //         console.error(e)
-        //     }
-        // })
-    }
 
     const change = (e: React.ChangeEvent<HTMLInputElement>) => {
         let {id, value} = e.target as any;
@@ -258,23 +215,10 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
             <div className="control">
 
                 <div>
-                    {/*<button onClick={*/}
-                    {/*    ()=>{osc1.start()}*/}
-                    {/*    // ()=>updateState({type:"START_OSC"})*/}
-                    {/*}>Start</button>*/}
-                    {/*<button onClick={*/}
-                    {/*    // ()=>updateState({type:"STOP_OSC"})*/}
-                    {/*    ()=>{osc1.stop()}*/}
-                    {/*}>Stop</button>*/}
 
                 </div>
                 <div className="params">
-
                     <h3>Vibrato</h3>
-                    {/*<input*/}
-                    {/*    max="5000"*/}
-                    {/*    value={frequency}*/}
-                    {/*    onChange={change} type="range" id="frequency"/>*/}
                     <div className={'input-div'}>
                         <div className='value'>{vibratoLevel}</div>
                         <input type="range"
