@@ -1,7 +1,7 @@
 import React, {useContext, useState, useRef, useEffect, createRef} from "react";
 import './Osc.css'
 import Button from "./Button";
-import {notes} from "./notes";
+import {keyEventNotes, notes} from "./notes";
 
 
 // import {CTX} from "../context/Store"
@@ -144,6 +144,7 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
                 masterOscGain.connect(primaryGainControl)
                 noteOscillator.start();
                 noteOscillator.stop(audioContext.currentTime + 1)
+                // masterOscGain.disconnect(primaryGainControl)
             }
 
             return (
@@ -163,25 +164,26 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
 
     }
 
-    document.addEventListener('keypress', (e) => {
-        let index = notes.findIndex(obj => {
-            return obj.key === e.key
-        })
-        console.log(' key', index)
-        let keyPlaying = myRefs.current[index];
-        try {
-            if (index !== -1) {
-                // @ts-ignore
-                if (keyPlaying.current !== null) {
-                    // @ts-ignore
-                    keyPlaying.current.click()
-                }
-            }
-        } catch (e) {
-            console.error(e)
-        }
-    })
-
+    const setupEventsListener=()=> {
+        // document.addEventListener('keypress', function keyPressEvent(e) {
+        //     let index = notes.findIndex(obj => {
+        //         return obj.key === e.key
+        //     })
+        //     console.log(' key', index)
+        //     let keyPlaying = myRefs.current[index];
+        //     try {
+        //         if (index !== -1) {
+        //             // @ts-ignore
+        //             if (keyPlaying.current !== null) {
+        //                 // @ts-ignore
+        //                 keyPlaying.current.click()
+        //             }
+        //         }
+        //     } catch (e) {
+        //         console.error(e)
+        //     }
+        // })
+    }
 
     const change = (e: React.ChangeEvent<HTMLInputElement>) => {
         let {id, value} = e.target as any;
@@ -195,6 +197,34 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
     //     // updateState({type: "CHANGE_OSC1_TYPE", payload: {id}})
     // }
 
+
+    useEffect(()=> {
+        function keyPressEvent(e: KeyboardEvent) {
+            let index = notes.findIndex(obj => {
+                return obj.key === e.key
+            })
+            console.log(' key', index)
+            let keyPlaying = myRefs.current[index];
+            try {
+                if (index !== -1) {
+                    // @ts-ignore
+                    if (keyPlaying.current !== null) {
+                        // @ts-ignore
+                        keyPlaying.current.click()
+                    }
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        document.addEventListener('keypress', keyPressEvent)
+        return ()=>{
+            // eslint-disable-next-line no-restricted-globals
+            document.removeEventListener('keypress',keyPressEvent)
+        }
+    },[])
+
+
     const handleVibratoChange = (e: React.FormEvent<HTMLInputElement>) => {
         setVibratoLevel(Number(e.currentTarget.value));
     }
@@ -206,6 +236,11 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
         setOscType(e.currentTarget.selectedOptions[0].value)
         console.log('gg', e.currentTarget.selectedOptions[0].value)
     }
+
+    const handleOscGainChange = (e: React.FormEvent<HTMLInputElement>)=> {
+        setOScGain(Number(e.currentTarget.value));
+    }
+
     return (
         <div className={'osc-div'}>
             <h2>{oscName}</h2>
@@ -259,6 +294,16 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
                         value={detune}
                         onChange={handleDetuneChange}
                         type="range" id="detune"/>
+                </div>
+                <div className="params">
+
+                    <h3>Volume</h3>
+                    <input
+                        max="1"
+                        step={0.1}
+                        value={oscGain}
+                        onChange={handleOscGainChange}
+                        type="range" id="gain"/>
                 </div>
                 <div className="params">
 
