@@ -164,41 +164,94 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
 
     }
 
-    document.addEventListener('keypress',(e)=>{
+    document.addEventListener('keypress',(e)=> {
         // console.log('key',buttonRef)
         // if(e.key === 'a') {
-            try {
-                switch(e.key) {
-                    // @ts-ignore
-
-                    case 'a':
-                        // console.log('a')
-                         let soundA = myRefs.current[0]
-                        if (soundA !== null) {
-                            console.table(soundA)
-                            console.log('%c Oh my heavens! ', 'background: #222; color: green')
-                            // @ts-ignore
-                            if (soundA.current.click !== null) soundA.current.click()
-                            break;
-                        }
-                    case 'w':
-                        // console.log('a')
-                        let soundB = myRefs.current[1]
-                        if (soundB !== null) {
-                            console.table(soundB)
-                            console.log('%c Oh my heavens! ', 'background: #222; color: green')
-                            // @ts-ignore
-                            if (soundB.current.click !== null) soundB.current.click()
-                            break
-                        }
-
-                }
-            }catch(e) {
-                console.log('%c Oh my heavens! ' , 'background: #222; color: #bada55')
-            }
+        // const keyPressed = e.key
+        // try {
+        //     switch(keyPressed) {
+        //         // @ts-ignore
+        //         case 'a':
+        //             // console.log('a')
+        //              let soundA = myRefs.current[0]
+        //             if (soundA !== null) {
+        //                 console.table(soundA)
+        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
+        //                 // @ts-ignore
+        //                 if (soundA.current.click !== null) soundA.current.click()
+        //             }
+        //             break
+        //         case 'w':
+        //             // console.log('a')
+        //             let soundB = myRefs.current[1]
+        //             if (soundB !== null) {
+        //                 console.table(soundB)
+        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
+        //                 // @ts-ignore
+        //                 if (soundB.current.click !== null) soundB.current.click()
+        //
+        //             }
+        //             break;
+        //         case 's':
+        //             // console.log('a')
+        //             let soundC = myRefs.current[2];
+        //             if (soundC !== null) {
+        //                 console.table(soundC)
+        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
+        //                 // @ts-ignore
+        //                 if (soundC.current.click !== null) soundC.current.click()
+        //             }
+        //             break
+        //         case 'e':
+        //             // console.log('a')
+        //             let soundD = myRefs.current[3];
+        //             if (soundD !== null) {
+        //                 console.table(soundD)
+        //                 console.log('%c Oh my heavens! ', 'background: #222; color: green')
+        //                 // @ts-ignore
+        //                 if (soundD.current.click !== null) soundD.current.click()
+        //
+        //             }
+        //             break
+        //         default:
+        //             console.log('default')
+        //
+        //     }
+        // }catch(e) {
+        //     console.log('%c Oh my heavens! ' , 'background: #222; color: #bada55')
+        // }
 
         // }
-    })
+
+        const keyPressed2 = notes.filter(note => {
+            if (note.key === e.key)
+                return note
+        })[0];
+        let index = notes.findIndex(obj => {
+            return obj.key === e.key
+        })
+        // if(index===-1) {
+        //     index = 0
+        // }
+        console.log(' key', index)
+        let keyPlaying = myRefs.current[index];
+        try {
+            if (index !== -1) {
+                // console.table(soundD)
+                // console.log('%c Oh my heavens! ', 'background: #222; color: green')
+                // @ts-ignore
+                if (keyPlaying.current !== null) {
+                    // @ts-ignore
+                    keyPlaying.current.click()
+                }
+            }
+        }catch(e) {
+            console.error(e)
+        }
+        })
+
+
+
     const change =(e: React.ChangeEvent<HTMLInputElement>)=> {
         let {id, value} = e.target as any;
         // osc1.frequency.value = value
