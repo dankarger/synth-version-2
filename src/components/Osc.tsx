@@ -234,7 +234,6 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
     }
     const handleChangeOscType = (e: React.FormEvent<HTMLSelectElement>) => {
         setOscType(e.currentTarget.selectedOptions[0].value)
-        console.log('gg', e.currentTarget.selectedOptions[0].value)
     }
 
     const handleOscGainChange = (e: React.FormEvent<HTMLInputElement>)=> {
