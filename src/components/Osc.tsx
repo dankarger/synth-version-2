@@ -166,21 +166,38 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
 
     document.addEventListener('keypress',(e)=>{
         // console.log('key',buttonRef)
-        if(e.key === 'a') {
+        // if(e.key === 'a') {
             try {
-                const playing = myRefs.current[0]
-                if (playing !== null) {
-                    console.table(playing)
-                    console.log('%c Oh my heavens! ' , 'background: #222; color: green')
-
+                switch(e.key) {
                     // @ts-ignore
-                    if (playing.current.click !== null) playing.current.click()
+
+                    case 'a':
+                        // console.log('a')
+                         let soundA = myRefs.current[0]
+                        if (soundA !== null) {
+                            console.table(soundA)
+                            console.log('%c Oh my heavens! ', 'background: #222; color: green')
+                            // @ts-ignore
+                            if (soundA.current.click !== null) soundA.current.click()
+                            break;
+                        }
+                    case 'w':
+                        // console.log('a')
+                        let soundB = myRefs.current[1]
+                        if (soundB !== null) {
+                            console.table(soundB)
+                            console.log('%c Oh my heavens! ', 'background: #222; color: green')
+                            // @ts-ignore
+                            if (soundB.current.click !== null) soundB.current.click()
+                            break
+                        }
+
                 }
             }catch(e) {
                 console.log('%c Oh my heavens! ' , 'background: #222; color: #bada55')
             }
 
-        }
+        // }
     })
     const change =(e: React.ChangeEvent<HTMLInputElement>)=> {
         let {id, value} = e.target as any;
