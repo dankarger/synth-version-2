@@ -1,6 +1,10 @@
 import React, {useContext, useState, useRef, useEffect, createRef} from "react";
 import './Osc.css'
+import Button from "./Button";
 import {notes} from "./notes";
+
+
+
 
 // import {CTX} from "../context/Store"
 
@@ -55,16 +59,19 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     // let {type , frequency, detune}= appState.osc1Settings;
     const [frequency, setFrequency] = useState(200);
     const [vibratoLevel, setVibratoLevel] = useState(0);
-
     const [detune, setDetune] = useState(50);
-
-    const [ oscType, setOscType] = useState<string | OscillatorType>('sine')
-    const buttonRef = useRef(null)
-    const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
-    const tryRef = createRef()
-
-    const arrLength = notes.length;
-    const [elRefs, setElRefs] = React.useState([]);
+    const [ oscType, setOscType] = useState<string | OscillatorType>('sine');
+    const [isMute, setISMute] = useState(false)
+    const [ oscGain, setOScGain] = useState<number | undefined>(1);
+    const [ oscGainLastValue, setOscGainLastValue] = useState<number>();
+    // const [buttonList, setButtonList] = useState<string[] | number[] |  React.RefObject<unknown>[]>([])
+    // const buttonRef = useRef(null)
+    // const [buttonList, setButtonList] = useState<{}[]>([{name:()=>console.log('g')},{}])
+    // const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
+    // const tryRef = createRef()
+    // const arrLength = notes.length;
+    // const [buttonsRefs, setButtonsRefs] = React.useState([]);
+    const myRefs = useRef([])
 
     // React.useEffect(() => {
     //     // add or remove refs
@@ -76,12 +83,37 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
     // }, [arrLength]);
 
 
+    const muteOsc =()=> {
+        setISMute(true)
+        setOscGainLastValue(oscGain)
+        setOScGain(0);
+        // primaryGainControl.gain.setValueAtTime(0, audioContext.currentTime)
+    }
+    const unMuteOsc =()=> {
+        setISMute(false)
+        setOScGain(oscGainLastValue);
+        // if (typeof oscGainLastValue === "number") {
+        //     primaryGainControl.gain.setValueAtTime(oscGainLastValue, audioContext.currentTime)
+        // }
+
+    }
+
+
+    const handleMuteButton=()=>{
+        if(isMute){
+            unMuteOsc()
+        }else {
+            muteOsc()
+        }
+    }
+
 
     const setupOsc =()=>{
-       return notes.map(({name, frequency, key},i)=> {
+        myRefs.current = notes.map((element, i) => myRefs.current[i] ?? createRef());
+
+        return notes.map(({name, frequency, key},i)=> {
                 const handleClick =()=>{
                 const noteOscillator = audioContext.createOscillator();
-                // noteOscillator.type = oscType=== 'sine'? 'sine' :'square';
                     // @ts-ignore
                     noteOscillator.type = oscType;
                 noteOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
@@ -105,35 +137,51 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                 noteGain.gain.setValueAtTime(sustainLevel, now + 1 - releaseTime )
                 noteGain.gain.linearRampToValueAtTime(0, now+1)
                 noteOscillator.connect(noteGain)
-                noteGain.connect(primaryGainControl)
+                    const masterOscGain = audioContext.createGain()
+                noteGain.connect(masterOscGain)
+                    if (typeof oscGain === "number") {
+                        masterOscGain.gain.setValueAtTime(oscGain, audioContext.currentTime)
+                    }
+                    masterOscGain.connect(primaryGainControl)
                 noteOscillator.start();
                 noteOscillator.stop(audioContext.currentTime +1)
             }
-           // itemsRef.current = itemsRef.current.slice(0, notes.length);
 
-              // const newItemRef = createRef()
-                // itemsRef.current.current.push()
-            document.addEventListener('keypress',(e)=>{
-                console.log('key',buttonRef)
-                if(e.key === key) {
-                    console.log(itemsRef)
-                    handleClick()
-                }
-            })
-           // @ts-ignore
            return (
+               <div key={name + oscName}>
                 <button
                 onClick={handleClick}
+                ref={myRefs.current[i]}
                 // ref={el => itemsRef.current[i] = el}
                 key={name + oscName}
                 // ref={el => itemsRef.current[i]  = el }
                 >{name} </button>
+                   {/*<Button ref={myRefs.current[i]} label={name} onClick={handleClick} />*/}
+               </div>
             )
         })
 
 
     }
 
+    document.addEventListener('keypress',(e)=>{
+        // console.log('key',buttonRef)
+        if(e.key === 'a') {
+            try {
+                const playing = myRefs.current[0]
+                if (playing !== null) {
+                    console.table(playing)
+                    console.log('%c Oh my heavens! ' , 'background: #222; color: green')
+
+                    // @ts-ignore
+                    if (playing.current.click !== null) playing.current.click()
+                }
+            }catch(e) {
+                console.log('%c Oh my heavens! ' , 'background: #222; color: #bada55')
+            }
+
+        }
+    })
     const change =(e: React.ChangeEvent<HTMLInputElement>)=> {
         let {id, value} = e.target as any;
         // osc1.frequency.value = value
@@ -234,6 +282,12 @@ const Osc:React.FC<Props> =({oscName, typeName}:Props)=> {
                         <option value="sawtooth">sawtooth</option>
 
                     </select>
+                    <label htmlFor={oscName}>Mute</label>
+                    <input  id={oscName}
+                            type="checkbox"
+                            value={isMute.toString()}
+                            onChange={handleMuteButton}
+                    />
                 </div>
                 {setupOsc()}
             </div>
