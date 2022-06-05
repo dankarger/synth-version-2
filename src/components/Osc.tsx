@@ -4,7 +4,7 @@ import Button from "./Button";
 import {keyEventNotes, notes} from "./notes";
 
 
-import {CTX} from "../context/Store"
+// import {CTX} from "../context/Store"
 
 
 interface Props {
@@ -54,16 +54,19 @@ primaryGainControl.gain.setValueAtTime(0.05, 0)
 primaryGainControl.connect(audioContext.destination)
 
 const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
-    const [appState, updateState] = useContext(CTX);
+    // const [appState, updateState] = useContext(CTX);
     // let {type , frequency, detune}= appState.osc1Settings;
-    const [frequency, setFrequency] = useState(200);
+    // const [frequency, setFrequency] = useState(200);
     const [vibratoLevel, setVibratoLevel] = useState(0);
-    const [detune, setDetune] = useState(50);
+    const [detune2, setDetune] = useState(50);
     const [oscType, setOscType] = useState<string | OscillatorType>('sine');
     const [isMute, setISMute] = useState(false)
     const [oscGain, setOScGain] = useState<number | undefined>(1);
     const [oscGainLastValue, setOscGainLastValue] = useState<number>();
     const myRefs = useRef([])
+
+    // @ts-ignore
+    // let {type }= appState.osc1Settings;
 
     const muteOsc = () => {
         setISMute(true)
@@ -107,7 +110,7 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
                 const releaseTime = 0.2;
                 const now = audioContext.currentTime
                 const noteGain = audioContext.createGain();
-                noteOscillator.frequency.setValueAtTime(frequency + detune, audioContext.currentTime)
+                noteOscillator.frequency.setValueAtTime(frequency + detune2, audioContext.currentTime)
                 noteGain.gain.setValueAtTime(0, 0);
                 noteGain.gain.linearRampToValueAtTime(1, now + attackTime);
                 noteGain.gain.linearRampToValueAtTime(sustainLevel, now + attackTime + decayTime)
@@ -142,17 +145,22 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
     }
 
 
-    const change = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let {id, value} = e.target as any;
-        // osc1.frequency.value = value
-        setFrequency(value)
+    // const change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     let {id, value} = e.target as any;
+    //     // osc1.frequency.value = value
+    //     setFrequency(value)
 
         // updateState({type: "CHANGE_OSC1", payload: {id, value}})
-    }
-    // const changeType = (e: React.MouseEvent<HTMLButtonElement>)=>{
-    //     let {id} = e.target  as HTMLInputElement;
-    //     // updateState({type: "CHANGE_OSC1_TYPE", payload: {id}})
     // }
+    // const change =( e : React.MouseEvent<HTMLInputElement>)=> {
+    //     let {id, value} = e.target;
+    //     updateState({type: "CHANGE_OSC1", payload: {id, value}})
+    // }
+    const changeType = (e: React.MouseEvent<HTMLButtonElement>)=>{
+        let {id} = e.target  as HTMLInputElement;
+        // @ts-ignore
+        updateState({type: "CHANGE_OSC1_TYPE", payload: {id}})
+    }
 
 
     useEffect(()=> {
@@ -201,7 +209,7 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
         <div className={'osc-div'}>
             <h2>{oscName}</h2>
             {/*<h3>Type: {typeName}</h3>*/}
-            <div>
+            {/*<div>*/}
                 {/*<button onClick={*/}
                 {/*    ()=>updateState({type:"START_OSC"})*/}
                 {/*    ()=>{osc1.connect(gain1)*/}
@@ -209,9 +217,9 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
                 {/*}>Start</button>*/}
                 {/*<button onClick={*/}
                 {/*    // ()=>updateState({type:"STOP_OSC"})*/}
-                {/*    // ()=>{osc1.disconnect(gain1)}*/}
+                    {/*// ()=>{osc1.disconnect(gain1)}*/}
                 {/*}>Stop</button>*/}
-            </div>
+            {/*</div>*/}
             <div className="control">
 
                 <div>
@@ -234,7 +242,7 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
                     <h3>detune</h3>
                     <input
                         max="100"
-                        value={detune}
+                        value={detune2}
                         onChange={handleDetuneChange}
                         type="range" id="detune"/>
                 </div>
@@ -251,17 +259,17 @@ const Osc: React.FC<Props> = ({oscName, typeName}: Props) => {
                 <div className="params">
 
                     <h3>wave</h3>
-                    {/*<button */}
-                    {/*    // onClick={changeType}*/}
+                    {/*<button*/}
+                    {/*    onClick={changeType}*/}
                     {/*        id="sine" className={`${type ==='sine' && 'active'}`}>sine</button>*/}
-                    {/*<button */}
-                    {/*    // onClick={changeType}*/}
+                    {/*<button*/}
+                    {/*    onClick={changeType}*/}
                     {/*        id="triangle" className={`${type ==='triangle' && 'active'}`}>triangle</button>*/}
-                    {/*<button */}
-                    {/*    // onClick={changeType}*/}
+                    {/*<button*/}
+                    {/*    onClick={changeType}*/}
                     {/*        id="square" className={`${type ==='square' && 'active'}`}>square</button>*/}
-                    {/*<button */}
-                    {/*    // onClick={changeType}*/}
+                    {/*<button*/}
+                    {/*    onClick={changeType}*/}
                     {/*        id="sawtooth" className={`${type ==='sawtooth' && 'active'}`}>sawtooth</button>*/}
                     <label htmlFor="oscTypes">Type</label>
                     <select name="oscTypes" id="oscTypes" defaultValue={oscType} onChange={handleChangeOscType}>

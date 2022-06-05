@@ -6,6 +6,7 @@ import Fader from "./components/Fader";
 import Osc from "./components/Osc";
 import Module from "./components/Module";
 import Keyboard from "./components/Keyboard";
+import Osc2 from "./components/Osc2";
 
 function App() {
     return (
@@ -44,6 +45,7 @@ function App() {
 
 
             </Ui>
+            <Osc2 />
         </div>
     );
 }
