@@ -23,8 +23,8 @@ interface  State {
     filterSettings: OscillatorNode | OscillatorNode[];
 }
 interface Actions {
-    type: string | OscillatorType;
-    payload: {id: string, value: number | string};
+    type: string | BiquadFilterType;
+    payload: {id:  OscillatorOptions | OscillatorType, value: number | string};
 
 }
 export function reducer(state: State, action: Actions) {
@@ -40,16 +40,22 @@ export function reducer(state: State, action: Actions) {
             osc1.disconnect()
             return{...state};
         case "CHANGE_OSC1":
+            // @ts-ignore
             osc1[id].value = value;
+            // @ts-ignore
             return {...state, osc1Settings: {...state.osc1Settings, [id]: value}};
         case "CHANGE_OSC1_TYPE":
             console.log('id',id)
+            // @ts-ignore
             osc1.type= id;
             return {...state,osc1Settings: {...state.osc1Settings, type:id}};
         case "CHANGE_FILTER":
+            // @ts-ignore
             filter[id].value = value;
+            // @ts-ignore
             return {...state,filterSettings: {...state.filterSettings, [id]: value}}
         case "CHANGE_FILTER_TYPE":
+            // @ts-ignore
             filter.type = id;
             return {...state,filterSettings: {...state.filterSettings, type: id}}
         default:
@@ -62,6 +68,7 @@ interface Props {
 }
 
 export default function Store(props:Props) {
+    // @ts-ignore
     const stateHook = React.useReducer(reducer , {
         osc1Settings:{
             frequency: osc1.frequency.value,
